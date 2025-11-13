@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Light SIMAN Block Diagram - Complete</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 16px;
+        }
+        .process-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            margin-top: 30px;
+        }
+        .process {
+            flex: 1;
+            min-width: 380px;
+        }
+        .process-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .controller-title {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+        }
+        .direction1-title {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+        .direction2-title {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        .block {
+            padding: 14px 18px;
+            margin: 12px auto;
+            border: 2px solid #333;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            max-width: 320px;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .block strong {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 5px;
+            color: #2c3e50;
+        }
+        .create-block {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-color: #28a745;
+        }
+        .assign-block {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-color: #ffc107;
+        }
+        .delay-block {
+            background: linear-gradient(135deg, #cce5ff, #b8daff);
+            border-color: #004085;
+        }
+        .branch-block {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            border-color: #721c24;
+            width: 180px;
+            height: 180px;
+            transform: rotate(45deg);
+            margin: 35px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .branch-text {
+            transform: rotate(-45deg);
+            font-size: 12px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+        .queue-block {
+            background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+            border-color: #0c5460;
+        }
+        .scan-block {
+            background: linear-gradient(135deg, #f5c6cb, #f8d7da);
+            border-color: #c82333;
+        }
+        .seize-block {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-color: #155724;
+        }
+        .release-block {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-color: #155724;
+        }
+        .tally-block {
+            background: linear-gradient(135deg, #e7f3ff, #d1ecf1);
+            border-color: #0056b3;
+        }
+        .dispose-block {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+            border-color: #343a40;
+            color: white;
+        }
+        .count-block {
+            background: linear-gradient(135deg, #e7f3ff, #cce5ff);
+            border-color: #0056b3;
+        }
+        .arrow {
+            text-align: center;
+            font-size: 28px;
+            margin: 8px 0;
+            color: #555;
+        }
+        .label {
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            margin: 8px 0;
+            color: #2c3e50;
+            background-color: #ecf0f1;
+            padding: 6px;
+            border-radius: 5px;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .cycle-arrow {
+            text-align: center;
+            font-size: 18px;
+            margin: 20px 0;
+            color: #f39c12;
+            font-weight: bold;
+            background-color: #fef5e7;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid #f39c12;
+        }
+        .split {
+            display: flex;
+            justify-content: space-around;
+            gap: 25px;
+            margin: 25px 0;
+        }
+        .path {
+            flex: 1;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #dee2e6;
+        }
+        .path-label {
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 15px;
+            font-size: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #27ae60, #229954);
+        }
+        .path-label.red {
+            background: linear-gradient(135deg, #c82333, #a71d2a);
+        }
+        .statistics-box {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border: 3px solid #4caf50;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .statistics-box h3 {
+            margin-top: 0;
+            color: #2e7d32;
+            text-align: center;
+            font-size: 20px;
+        }
+        .statistics-box ul {
+            margin: 10px 0;
+            padding-left: 25px;
+            font-size: 14px;
+        }
+        .statistics-box li {
+            margin: 8px 0;
+        }
+        .info-note {
+            font-size: 12px;
+            margin-top: 15px;
+            color: #666;
+            text-align: center;
+            font-style: italic;
+        }
+        .key-legend {
+            background-color: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 1400px;
+        }
+        .key-legend h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            text-align: center;
+        }
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-color {
+            width: 40px;
+            height: 30px;
+            border-radius: 5px;
+            border: 2px solid #333;
+        }
+        .legend-text {
+            font-size: 13px;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚦 Traffic Light Control System</h1>
+        <p class="subtitle">SIMAN Simulation Model - Complete Block Diagram</p>
+
+        <div class="process-container">
+            <!-- LIGHT CONTROLLER PROCESS -->
+            <div class="process">
+                <div class="process-title controller-title">🔄 Light Controller Process</div>
+                
+                <div class="block create-block">
+                    <strong>CREATE</strong>
+                    1 entity at t=0<br>
+                    <small style="color: #666;">LightController</small>
+                </div>
+                <div class="arrow">↓</div>
+                
+                <div class="label">📍 CycleStart</div>
+                
+                <div class="block assign-block">
+                    <strong>ASSIGN</strong>
+                    Light1 = 0 (RED)<br>
+                    Light2 = 0 (RED)
+                </div>
+                <div class="arrow">↓</div>
+                <div class="label">🔴 Phase 1: Both RED</div>
+                
+                <div class="block delay-block">
+                    <strong>DELAY</strong>
+                    55 seconds
+                </div>
+                <div class="arrow">↓</div>
+                
+                <div class="block assign-block">
+                    <strong>ASSIGN</strong>
+                    Light1 = 1 (GREEN)<br>
+                    Light2 = 0 (RED)
+                </div>
+                <div class="arrow">↓</div>
+                <div class="label">🟢 Phase 2: Direction 1 GREEN</div>
+                
+                <div class="block delay-block">
+                    <strong>DELAY</strong>
+                    G1 seconds
+                </div>
+                <div class="arrow">↓</div>
+                
+                <div class="block assign-block">
+                    <strong>ASSIGN</strong>
+                    Light1 = 0 (RED)<br>
+                    Light2 = 0 (RED)
+                </div>
+                <div class="arrow">↓</div>
+                <div class="label">🔴 Phase 3: Both RED</div>
+                
+                <div class="block delay-block">
+                    <strong>DELAY</strong>
+                    55 seconds
+                </div>
+                <div class="arrow">↓</div>
+                
+                <div class="block assign-block">
+                    <strong>ASSIGN</strong>
+                    Light1 = 0 (RED)<br>
+                    Light2 = 1 (GREEN)
+                </div>
+                <div class="arrow">↓</div>
+                <div class="label">🟢 Phase 4: Direction 2 GREEN</div>
+                
+                <div class="block delay-block">
+                    <strong>DELAY</strong>
+                    G2 seconds
+                </div>
+                
+                <div class="cycle-arrow">🔄 BRANCH: ALWAYS → CycleStart</div>
+            </div>
+
+            <!-- DIRECTION 1 ARRIVALS -->
+            <div class="process">
+                <div class="process-title direction1-title">🚗 Direction 1 Arrivals</div>
+                
+                <div class="label">📍 Dir1Arrive</div>
+                <div class="block create-block">
+                    <strong>CREATE</strong>
+                    Interarrival: EXPO(12)<br>
+                    <small style="color: #666;">Mean = 12 seconds</small>
+                </div>
+                <div class="arrow">↓</div>
+                
+                <div class="block assign-block">
+                    <strong>ASSIGN</strong>
+                    ArriveTime1 = TNOW
+                </div>
+                <div class="arrow">↓</div>
+                
+                <div class="block count-block">
+                    <strong>COUNT</strong>
+                    TotalCars1
+                </div>
+                <div class="arrow">↓</div>
+                
+                <div class="branch-block">
+                    <div class="branch-text">
+                        <strong>BRANCH</strong><br>
+                        Light1=1<br>
+                        AND<br>
+                        NQ(Queue1)=0?
+                    </div>
+                </div>
+                
+                <div class="split">
+                    <div class="path">
+                        <div class="path-label">✅ YES - PassThrough1</div>
+                        <div class="label" style="background: #d4edda;">Green light, no queue!</div>
+                        <div class="block tally-block">
+                            <strong>TALLY</strong>
+                            WaitTime1, 0
+                        </div>
+                        <div class="arrow">↓</div>
+                        <div class="block dispose-block">
+                            <strong>DISPOSE</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="path">
+                        <div class="path-label red">❌ NO - JoinQueue1</div>
+                        <div class="label" style="background: #f8d7da;">Must wait in queue</div>
+                        <div class="block queue-block">
+                            <strong>QUEUE</strong>
+                            Queue1
+                        </div>
+                        <div class="arrow">↓</div>
+                        <div class="block scan-block">
+                            <strong>SCAN</strong>
+                            Light1.EQ.1<br>
+                            <small style="font-size: 11px;">(Wait for green)</small>
+                        </div>
+                        <div class="arrow">↓</div>
+                        
+                        <div class="block seize-block">
+                            <strong>SEIZE</strong>
+                            Intersection1<br>
+                            <small style="font-size: 11px;">(Grab departure slot)</small>
+                        </div>
+                        <div class="arrow">↓</div>
+                        
+                        <div class="block delay-block">
+                            <strong>DELAY</strong>
+                            2 seconds<br>
+                            <small style="font-size: 11px;">(Pass through zone)</small>
+                        </div>
+                        <div class="arrow">↓</div>
+                        
+                        <div class="block release-block">
+                            <strong>RELEASE</strong>
+                            Intersection1<br>
+                            <small style="font-size: 11px;">(Free slot for next)</small>
+                        </div>
+                        <div class="arrow">↓</div>
+                        
+                        <div class="block tally-block">
+                            <strong>TALLY</strong>
+                            WaitTime1,<br>TNOW - ArriveTime1
+                        </div>
+                        <div class="arrow">↓</div>
+                        <div class="block dispose-block">
+                            <strong>DISPOSE</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DIRECTION 2 ARRIVALS -->
+            <div class="process">
+                <div class="process-title direction2-title">🚙 Direction 2 Arrivals</div>
+                
+                <div class="label">📍 Dir2Arrive</div>
+                <div class="block create-block">
+                    <strong>CREATE</strong>
+                    Interarrival: EXPO(9)<br>
+                    <small style="color: #666;">Mean = 9 seconds (busier!)</small>
+                </div>
+                <div class="arrow">↓</div>
+                
+                <div class="block assign-block">
+                    <strong>ASSIGN</strong>
+                    ArriveTime2 = TNOW
+                </div>
+                <div class="arrow">↓</div>
+                
+                <div class="block count-block">
+                    <strong>COUNT</strong>
+                    TotalCars2
+                </div>
+                <div class="arrow">↓</div>
+                
+                <div class="branch-block">
+                    <div class="branch-text">
+                        <strong>BRANCH</strong><br>
+                        Light2=1<br>
+                        AND<br>
+                        NQ(Queue2)=0?
+                    </div>
+                </div>
+                
+                <div class="split">
+                    <div class="path">
+                        <div class="path-label">✅ YES - PassThrough2</div>
+                        <div class="label" style="background: #d4edda;">Green light, no queue!</div>
+                        <div class="block tally-block">
+                            <strong>TALLY</strong>
+                            WaitTime2, 0
+                        </div>
+                        <div class="arrow">↓</div>
+                        <div class="block dispose-block">
+                            <strong>DISPOSE</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="path">
+                        <div class="path-label red">❌ NO - JoinQueue2</div>
+                        <div class="label" style="background: #f8d7da;">Must wait in queue</div>
+                        <div class="block queue-block">
+                            <strong>QUEUE</strong>
+                            Queue2
+                        </div>
+                        <div class="arrow">↓</div>
+                        <div class="block scan-block">
+                            <strong>SCAN</strong>
+                            Light2.EQ.1<br>
+                            <small style="font-size: 11px;">(Wait for green)</small>
+                        </div>
+                        <div class="arrow">↓</div>
+                        
+                        <div class="block seize-block">
+                            <strong>SEIZE</strong>
+                            Intersection2<br>
+                            <small style="font-size: 11px;">(Grab departure slot)</small>
+                        </div>
+                        <div class="arrow">↓</div>
+                        
+                        <div class="block delay-block">
+                            <strong>DELAY</strong>
+                            2 seconds<br>
+                            <small style="font-size: 11px;">(Pass through zone)</small>
+                        </div>
+                        <div class="arrow">↓</div>
+                        
+                        <div class="block release-block">
+                            <strong>RELEASE</strong>
+                            Intersection2<br>
+                            <small style="font-size: 11px;">(Free slot for next)</small>
+                        </div>
+                        <div class="arrow">↓</div>
+                        
+                        <div class="block tally-block">
+                            <strong>TALLY</strong>
+                            WaitTime2,<br>TNOW - ArriveTime2
+                        </div>
+                        <div class="arrow">↓</div>
+                        <div class="block dispose-block">
+                            <strong>DISPOSE</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="statistics-box">
+            <h3>📊 Statistics Collection</h3>
+            <ul>
+                <li><strong>TALLY:</strong> WaitTime1, WaitTime2 (wait time statistics)</li>
+                <li><strong>COUNT:</strong> TotalCars1, TotalCars2 (arrival counts)</li>
+                <li><strong>DSTATS:</strong> NQ(Queue1), NQ(Queue2) (queue lengths over time)</li>
+                <li><strong>DSTATS:</strong> Light1, Light2 (light state history)</li>
+            </ul>
+            <p class="info-note">
+                DSTATS are defined in the .exp file, not as model blocks
+            </p>
+        </div>
+
+        <div class="key-legend">
+            <h3>🔑 Block Type Legend</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #d4edda, #c3e6cb); border-color: #28a745;"></div>
+                    <div class="legend-text">CREATE - Generate entities</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #fff3cd, #ffeaa7); border-color: #ffc107;"></div>
+                    <div class="legend-text">ASSIGN - Set variables</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #cce5ff, #b8daff); border-color: #004085;"></div>
+                    <div class="legend-text">DELAY - Wait for time</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #f8d7da, #f5c6cb); border-color: #721c24;"></div>
+                    <div class="legend-text">BRANCH - Decision point</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #d1ecf1, #bee5eb); border-color: #0c5460;"></div>
+                    <div class="legend-text">QUEUE - Wait in line</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #f5c6cb, #f8d7da); border-color: #c82333;"></div>
+                    <div class="legend-text">SCAN - Wait for condition</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #d4edda, #c3e6cb); border-color: #155724;"></div>
+                    <div class="legend-text">SEIZE/RELEASE - Resource control</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #e7f3ff, #d1ecf1); border-color: #0056b3;"></div>
+                    <div class="legend-text">TALLY/COUNT - Collect stats</div>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, #6c757d, #5a6268); border-color: #343a40;"></div>
+                    <div class="legend-text">DISPOSE - Entity exits</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
